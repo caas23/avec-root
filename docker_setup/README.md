@@ -2,11 +2,11 @@
 
 ## Starting the server
 
-docker compose up -d server
+`docker compose up -d server`
 
 ## Accessing a client
 
-docker compose run customer_webbclient
+`docker compose run customer_webbclient`
 (or other service)
 
 ## Test that it works
