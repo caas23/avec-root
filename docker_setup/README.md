@@ -13,7 +13,7 @@
 
 To test that the script works:
 
-`./vteam-client bikes <arg>`
+`./vteam-client test <arg>`
 
 To test connection with the server:
 
