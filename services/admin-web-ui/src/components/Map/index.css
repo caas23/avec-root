@@ -1,0 +1,10 @@
+/* MAP */
+.leaflet-container {
+    height: 49vh;
+    margin-top: 1em;
+}
+
+p.map-loading-msg {
+    text-align: center;
+    margin-top: 3em;
+}
