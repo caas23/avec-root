@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -112,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         _currentPosition!.latitude,
                         _currentPosition!
                             .longitude), // Center the map over user position
-                    initialZoom: 9.2,
+                    initialZoom: 15,
                   ),
                   children: [
                     TileLayer(
@@ -121,6 +122,20 @@ class _MyHomePageState extends State<MyHomePage> {
                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
                       userAgentPackageName: 'com.example.app',
                       // And many more recommended properties!
+                    ),
+                    CurrentLocationLayer(
+                      alignPositionOnUpdate: AlignOnUpdate.always,
+                      alignDirectionOnUpdate: AlignOnUpdate.never,
+                      style: const LocationMarkerStyle(
+                        marker: DefaultLocationMarker(
+                          child: Icon(
+                            Icons.navigation,
+                            color: Colors.white,
+                          ),
+                        ),
+                        markerSize: Size(40, 40),
+                        markerDirection: MarkerDirection.heading,
+                      ),
                     ),
                     RichAttributionWidget(
                       // Include a stylish prebuilt attribution widget that meets all requirments
