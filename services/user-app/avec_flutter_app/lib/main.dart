@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 
 void main() {
   runApp(const MyApp());
@@ -62,17 +68,25 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  LatLng? _currentPosition;
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentPosition();
+  }
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  Future<void> _getCurrentPosition() async {
+    PermissionStatus permissionStatus = await Permission.location.request();
+    if (permissionStatus.isGranted) {
+      Position position = await Geolocator.getCurrentPosition(
+          locationSettings:
+              const LocationSettings(accuracy: LocationAccuracy.best));
+      setState(() {
+        _currentPosition = LatLng(position.latitude, position.longitude);
+      });
+    } else {
+      throw Exception;
+    }
   }
 
   @override
@@ -83,56 +97,61 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title:
             const Image(image: AssetImage('assets/avec-logo.png'), height: 50),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Image(
-                image: AssetImage('assets/scooter-icon.png'), width: 200),
-            const SizedBox(height: 30),
-            const Text('Här lanseras snart AVECs elscooterapp'),
-            const SizedBox(height: 30),
-            const Text(
-              'You have pushed the button this many times:',
+      body: _currentPosition == null
+          ? const Center(child: CircularProgressIndicator())
+          : Stack(
+              children: <Widget>[
+                FlutterMap(
+                  options: MapOptions(
+                    initialCenter: LatLng(
+                        _currentPosition!.latitude,
+                        _currentPosition!
+                            .longitude), // Center the map over user position
+                    initialZoom: 15,
+                  ),
+                  children: [
+                    TileLayer(
+                      // Display map tiles from any source
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
+                      userAgentPackageName: 'com.example.app',
+                      // And many more recommended properties!
+                    ),
+                    CurrentLocationLayer(
+                      alignPositionOnUpdate: AlignOnUpdate.always,
+                      alignDirectionOnUpdate: AlignOnUpdate.never,
+                      style: const LocationMarkerStyle(
+                        marker: DefaultLocationMarker(
+                          child: Icon(
+                            Icons.navigation,
+                            color: Colors.white,
+                          ),
+                        ),
+                        markerSize: Size(40, 40),
+                        markerDirection: MarkerDirection.heading,
+                      ),
+                    ),
+                    RichAttributionWidget(
+                      // Include a stylish prebuilt attribution widget that meets all requirments
+                      attributions: [
+                        TextSourceAttribution(
+                          'OpenStreetMap contributors',
+                          onTap: () => launchUrl(Uri.parse(
+                              'https://openstreetmap.org/copyright')), // (external)
+                        ),
+                        // Also add images...
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
