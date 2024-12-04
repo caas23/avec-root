@@ -1,2 +1,2 @@
 # Secrets
-.env
+services/rest-api/.env
