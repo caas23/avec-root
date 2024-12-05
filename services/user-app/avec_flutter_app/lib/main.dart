@@ -137,6 +137,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         markerDirection: MarkerDirection.heading,
                       ),
                     ),
+                    PolygonLayer(
+                      polygons: [
+                        Polygon(
+                          points: [
+                            LatLng(30, 40),
+                            LatLng(20, 50),
+                            LatLng(25, 45)
+                          ],
+                          color: Colors.blue,
+                        ),
+                      ],
+                    ),
                     RichAttributionWidget(
                       // Include a stylish prebuilt attribution widget that meets all requirments
                       attributions: [
