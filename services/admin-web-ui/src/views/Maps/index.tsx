@@ -26,10 +26,10 @@ const Maps: React.FC = () => {
     <div>
 		<h1>Maps</h1>
       	<ul className="city-list">
-        	{cities.map((city) => (
-          	<li key={city.route} onClick={() => displayCityMap(city.route)}>
-            	{city.name}
-          	</li>
+			{cities.map((city) => (
+				<li key={city.route} onClick={() => displayCityMap(city.route)}>
+            		{city.name}
+          		</li>
         	))}
       	</ul>
     </div>
