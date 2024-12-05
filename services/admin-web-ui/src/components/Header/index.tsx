@@ -19,10 +19,10 @@ const Header: React.FC = () => {
 							<a href="/cities">Cities</a>
 						</li>
 						<li>
-							<a href="/users">Users</a>
+							<a href="/maps">Maps</a>
 						</li>
 						<li>
-							<a href="/maps">Maps</a>
+							<a href="/users">Users</a>
 						</li>
 					</ul>
 				</nav>

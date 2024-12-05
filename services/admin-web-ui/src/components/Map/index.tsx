@@ -28,15 +28,14 @@ const Map: React.FC = () => {
 	});
 
 	useEffect(() => {
-		if (city) {
-			document.title = `Map ${cityNameDisplay[city]} - Avec`;
-		}
+		document.title = city ? `Map ${cityNameDisplay[city]} - Avec` : 'Map - Avec';
 
 		const fetchCityBorders = async (cityName: string) => {
 			try {
 				const response = await fetch(
 					`https://nominatim.openstreetmap.org/search.php?q=${cityName}&polygon_geojson=1&format=json`
 				);
+				console.log(response)
 				if (!response.ok) {
 					throw new Error(`Error: ${response.statusText}`);
 				}
@@ -53,9 +52,8 @@ const Map: React.FC = () => {
 			}
 		};
 		
-		if (city) {
-			fetchCityBorders(city);
-		}
+		city ? fetchCityBorders(city) : "";
+
 	}, [city]);
 
 	// för att hinna hämta cityCenter och
@@ -65,42 +63,41 @@ const Map: React.FC = () => {
   	if (!cityCenter) {
 		return (
 			<div>
-				<h1>Map</h1>
+				<h1>{city ? cityNameDisplay[city] : ""}</h1>
 				<p className="map-loading-msg">Loading map ...</p>
 			</div>
 		);
 	}
 
-	if (city) {
-		return (
-			<div>
-				<h1>{cityNameDisplay[city]}</h1>
-				<MapContainer center={cityCenter} zoom={12}>
-					<TileLayer
-						attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-						url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+	return (
+		<div>
+			<h1>{city ? cityNameDisplay[city] : ""}</h1>
+			<MapContainer center={cityCenter} zoom={12}>
+				<TileLayer
+					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+					url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+				/>
+				{cityBorders && (
+					<GeoJSON
+						data={cityBorders}
+						style={{
+							color: "#1A4D30", // --color-green-darker
+							weight: 1.5,
+							fillOpacity: 0.15,
+						}}
 					/>
-					{cityBorders && (
-						<GeoJSON
-							data={cityBorders}
-							style={{
-								color: "#1A4D30", // testade ha en av de ljusare gröna här, men blir lätt att allt flyter ihop mot bakgrunden och den gröna scooter-ikonen då.
-								weight: 1.5,
-								fillOpacity: 0.15,
-							}}
-						/>
-					)};
-					<Marker position={cityCenter} icon={scooterMarker}>
-						<Popup>
-							Vi kan använda popups som dessa för <br />
-							cyklar, laddstationer och parkeringar. <br />
-							Men med custom ikoner för vardera del.
-						</Popup>
-					</Marker>
-				</MapContainer>
-			</div>
-		);
-	}
-};
+				)};
+				<Marker position={cityCenter} icon={scooterMarker}>
+					<Popup>
+						Vi kan använda popups som dessa för <br />
+						cyklar, laddstationer och parkeringar. <br />
+						Men med custom ikoner för vardera del.
+					</Popup>
+				</Marker>
+			</MapContainer>
+		</div>
+	);
+}
+
 
 export default Map;
