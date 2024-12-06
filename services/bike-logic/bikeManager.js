@@ -51,6 +51,7 @@ const manager = {
             // Insert multiple bikes
             let result = await db.bikeCollection.insertMany(newBikes);
             if (result.ok) {
+                // I am not sure bikes attribute in city is that useful
                 result = cityManager.addNewBikes(newBikes, data.city_id);
             }
 
