@@ -1,36 +1,20 @@
 {
   "name": "rest-api",
   "version": "1.0.0",
-  "description": "RESTful API for the AVEC scooter services",
+  "description": "*RESTful Express/Node API.*",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node --loader ts-node/esm --experimental-specifier-resolution=node --loader tsconfig-paths/register ./src/app.ts"
+    "dev": "node src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "The AVEC team",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.6",
-    "express": "^4.21.1",
-    "helmet": "^8.0.0",
-    "http-status-codes": "^2.3.0",
-    "mongodb": "^6.11.0",
-    "uuid": "^11.0.3"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0"
   },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cors": "^2.8.17",
-    "@types/dotenv": "^6.1.1",
-    "@types/express": "^5.0.0",
-    "@types/helmet": "^0.0.48",
-    "@types/http-status-codes": "^1.2.0",
-    "@types/uuid": "^10.0.0",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.2"
-  }
+  "type": "module"
 }
