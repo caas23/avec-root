@@ -46,6 +46,14 @@ app.get("/bikes", async (req, res) => {
     res.json(result);
 });
 
+// TEST post /bikes/{city_name}
+app.post("/add/bike/:city", async (req, res) => {
+    const result = await bikeManager.createBike("Lund");
+
+    console.log(result);
+    res.json(result);
+});
+
 // Start the server after connecting to the database
 const startServer = async () => {
     try {
