@@ -40,8 +40,8 @@
   }
 }
 
-.plugs-list div {
-  margin-left: 0.8em;
+.sub-list div {
+  margin-left: 0.5em;
 
   & .sub-level-arrow {
     color: var(--color-green-primary);

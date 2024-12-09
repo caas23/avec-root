@@ -1,4 +1,6 @@
-const ParkingZone1 = {
+import { ParkingZone } from "../CityTable/interfaces";
+
+const ParkingZone1: ParkingZone = {
   _id: "P001",
   "area": [
     [1.1, 1.1],
@@ -7,7 +9,7 @@ const ParkingZone1 = {
   ],
 };
 
-const ParkingZone2 = {
+const ParkingZone2: ParkingZone = {
   _id: "P002",
   "area": [
     [2.2, 2.2],
@@ -16,7 +18,7 @@ const ParkingZone2 = {
   ],
 };
 
-const ParkingZone3 = {
+const ParkingZone3: ParkingZone = {
   _id: "P003",
   "area": [
     [3.3, 3.3],
@@ -25,10 +27,6 @@ const ParkingZone3 = {
   ],
 };
 
-const tempDataParking = [
-  { zone_id: ParkingZone1._id, area: ParkingZone1.area },
-  { zone_id: ParkingZone2._id, area: ParkingZone2.area },
-  { zone_id: ParkingZone3._id, area: ParkingZone3.area },
-];
+const tempDataParking: ParkingZone[] = [ParkingZone1, ParkingZone2, ParkingZone3];
 
 export { ParkingZone1, ParkingZone2, ParkingZone3, tempDataParking };

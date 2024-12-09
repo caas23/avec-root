@@ -1,0 +1,28 @@
+.bike-list {
+	list-style: none;
+    font-size: 1.4em;
+}
+
+.bike-list li {
+	margin: 0.5em 0;
+}
+
+.bike-list li {
+	color: var(--color-black);
+}
+
+.bike-list li:hover {
+    cursor: pointer;
+    
+    /* om vi vill följa hover-mönstret i menyn */
+    width: fit-content;
+    margin-bottom: -4px;
+	border-bottom: 4px solid var(--color-green-primary);
+    
+    /* alternativ hover-effekt */
+    /* color: var(--color-green-primary); */
+}
+
+.bike-list li.li-last-bike:hover {
+    margin-bottom: 7px;
+}

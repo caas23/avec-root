@@ -2,7 +2,6 @@ import React from "react";
 import { RowItemProps } from "./interfaces";
 
 const RowDetails: React.FC<RowItemProps> = ({ item }) => {
-
   /* TODO: Lägg till knapp/möjlighet att uppdatera innehållet i kategorierna */
 
   /* Area, i stations och parking, kommer troligen behöva justeras när vi får in 
@@ -10,23 +9,24 @@ const RowDetails: React.FC<RowItemProps> = ({ item }) => {
     man trycka på någon knapp för att visa fler, eller dölja alla från början och 
     endast visa om man väljer att öppna en dropdown/popup eller dylikt */
 
+  console.log(item)
   // bike
-  if ("bike_id" in item) {
+  if ("status" in item) {
     return (
       <div className="city-row">
-          <span><strong>Bike #{item.bike_id}</strong></span>
+          <span><strong>Bike #{item._id}</strong></span>
           <span>Status: {item.status.in_service ? "In Service" : item.status.available ? "Available" : "Occupied"}</span>
           <span>Position: [{item.location.join(", ")}]</span>
-          <span className="more-details"><a href={`/bike/${item.bike_id}`}>View more details</a></span>
+          <span className="more-details"><a href={`/bike/${item._id}`}>View more details</a></span>
       </div>
     );
   }
 
   // station
-  if ("station_id" in item) {
+  if ("plugs" in item) {
     return (
       <div className="city-row">
-        <span><strong>Station #{item.station_id}</strong></span>
+        <span><strong>Station #{item._id}</strong></span>
         <span>
           Area:
             {item.area.map((coordinatePair, index) => (
@@ -36,7 +36,7 @@ const RowDetails: React.FC<RowItemProps> = ({ item }) => {
             ))}
         </span>
         <span>Plugs: {item.plugs.length}
-          <span className="plugs-list">
+          <span className="sub-list">
           {item.plugs.map((plug, index) => (
             <div key={index}>
               <span className="sub-level-arrow">&#8618; </span> 
@@ -50,10 +50,10 @@ const RowDetails: React.FC<RowItemProps> = ({ item }) => {
   }
 
   // parking
-  if ("zone_id" in item) {
+  if ("area" in item && !("plugs" in item)) {
     return (
       <div className="city-row">
-        <span><strong>Zone #{item.zone_id}</strong></span>
+        <span><strong>Zone #{item._id}</strong></span>
         <span>
           Area:
             {item.area.map((coordinatePair, index) => (
@@ -67,10 +67,10 @@ const RowDetails: React.FC<RowItemProps> = ({ item }) => {
   }
 
   // rules
-  if ("rule_id" in item) {
+  if ("description" in item) {
     return (
       <div className="city-row">
-        <span><strong>Rule #{item.rule_id}</strong></span>
+        <span><strong>Rule #{item._id}</strong></span>
         <span>Description: {item.description}</span>
       </div>
     );

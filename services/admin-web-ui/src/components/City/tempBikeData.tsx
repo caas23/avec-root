@@ -1,37 +1,47 @@
-const Bike1 = {
-    _id: "B001",
-    status: {
-      available: true,
-      battery_level: 79,
-      in_service: false,
-    },
-    location: [1, 1],
-};
-  
-const Bike2 = {
-    _id: "B002",
-    status: {
-      available: false,
-      battery_level: 53,
-      in_service: false,
-    },
-    location: [2, 2],
-};
-  
-const Bike3 = {
-    _id: "B003",
-    status: {
-      available: false,
-      battery_level: 28,
-      in_service: true,
-    },
-    location: [3, 3],
+import { Bike } from "../CityTable/interfaces";
+
+const Bike1: Bike = {
+  _id: "B001",
+  location: [1.0, 1.0],
+  cityId: "C001",
+  city_name: "Lund",
+  speed: 15.5,
+  status: {
+    available: false,
+    battery_level: 79,
+    in_service: false,
+  },
+  completed_trips: ["T001", "T002"],
 };
 
-const tempDataBikes = [
-  { bike_id: Bike1._id, status: Bike1.status, location: Bike1.location },
-  { bike_id: Bike2._id, status: Bike2.status, location: Bike2.location },
-  { bike_id: Bike3._id, status: Bike3.status, location: Bike3.location },
-];
+const Bike2: Bike = {
+  _id: "B002",
+  location: [2.0, 2.0],
+  cityId: "C002",
+  city_name: "Solna",
+  speed: 0.0,
+  status: {
+    available: true,
+    battery_level: 53,
+    in_service: false,
+  },
+  completed_trips: ["T003"],
+};
 
-export { Bike1, Bike2, Bike3, tempDataBikes }
+const Bike3: Bike = {
+  _id: "B003",
+  location: [3.0, 3.0],
+  cityId: "C003",
+  city_name: "Skellefteå",
+  speed: 0.0,
+  status: {
+    available: false,
+    battery_level: 28,
+    in_service: true,
+  },
+  completed_trips: ["T004", "T005", "T006"],
+};
+
+const tempDataBikes: Bike[] = [Bike1, Bike2, Bike3];
+
+export { Bike1, Bike2, Bike3, tempDataBikes };

@@ -22,28 +22,24 @@ const City: React.FC = () => {
   };
 
   useEffect(() => {
-    if (city) {
-      document.title = `City ${cityNameDisplay[city]} - Avec`;
-    }
+    document.title = `City ${city ? cityNameDisplay[city] : ""} - Avec`;
   }, [city]);
 
-  if (city) {
-    const tableRows = [
-      { category: "Bikes", count: tempDataBikes.length, data: tempDataBikes },
-      { category: "Charging Stations", count: tempDataCharging.length, data: tempDataCharging },
-      { category: "Parking Zones", count: tempDataParking.length, data: tempDataParking },
-      { category: "Rules", count: tempDataRules.length, data: tempDataRules },
-    ];
+  const BikesInCity = tempDataBikes.filter(data => data.city_name.toLowerCase() === city)
 
-    return (
-      <div>
-        <h1>{cityNameDisplay[city]}</h1>
-        <CityTable rows={tableRows} />
-      </div>
-    );
-  }
+  const tableRows = [
+    { category: "Bikes", count: BikesInCity.length, data: BikesInCity },
+    { category: "Charging Stations", count: tempDataCharging.length, data: tempDataCharging },
+    { category: "Parking Zones", count: tempDataParking.length, data: tempDataParking },
+    { category: "Rules", count: tempDataRules.length, data: tempDataRules },
+  ];
 
-  return null;
+  return (
+    <div>
+      <h1>{city ? cityNameDisplay[city] : ""}</h1>
+      <CityTable rows={tableRows} />
+    </div>
+  );
 };
 
 export default City;

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Bike from "./components/Bike";
 import City from "./components/City";
 import Map from "./components/Map";
 import Home from "./views/Home";
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/bikes" element={<Bikes />} />
+          <Route path="/bike/:bike" element={<Bike />} />
           <Route path="/cities" element={<Cities />} />
           <Route path="/city/:city" element={<City />} />
           <Route path="/maps" element={<Maps />} />
