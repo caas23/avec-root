@@ -1,4 +1,6 @@
-const ChargingStation1 = {
+import { ChargingStation } from "../CityTable/interfaces";
+
+const ChargingStation1: ChargingStation = {
   _id: "S001",
   "area": [
     [1.1, 1.1],
@@ -12,7 +14,7 @@ const ChargingStation1 = {
   ],
 };
 
-const ChargingStation2 = {
+const ChargingStation2: ChargingStation = {
   _id: "S002",
   "area": [
     [2.2, 2.2],
@@ -26,7 +28,7 @@ const ChargingStation2 = {
   ],
 };
 
-const ChargingStation3 = {
+const ChargingStation3: ChargingStation = {
   _id: "S003",
   "area": [
     [3.3, 3.3],
@@ -40,10 +42,6 @@ const ChargingStation3 = {
   ],
 };
 
-const tempDataCharging = [
-  { station_id: ChargingStation1._id, area: ChargingStation1.area , plugs: ChargingStation1.plugs },
-  { station_id: ChargingStation2._id, area: ChargingStation2.area , plugs: ChargingStation2.plugs },
-  { station_id: ChargingStation3._id, area: ChargingStation3.area , plugs: ChargingStation3.plugs },
-];
+const tempDataCharging: ChargingStation[] = [ChargingStation1, ChargingStation2, ChargingStation3];
 
 export { ChargingStation1, ChargingStation2, ChargingStation3, tempDataCharging };

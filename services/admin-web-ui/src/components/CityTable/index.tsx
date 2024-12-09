@@ -3,7 +3,7 @@ import "./index.css";
 import TableRow from "./TableRow";
 import { CityTableProps } from "./interfaces";
 
-const CityTable: React.FC<CityTableProps> = ({ rows }) => {
+const CityTable: React.FC<CityTableProps> = ({ rows}) => {
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   const toggleDetails = (index: number) => {

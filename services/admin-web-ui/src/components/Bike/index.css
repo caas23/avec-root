@@ -1,0 +1,39 @@
+/* Tillfällig lösning för att undvika att sidan "hoppar" pga scrollbaren */
+/* html {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+  
+html::-webkit-scrollbar {
+    display: none;
+} */
+
+/* alternativ att vi har en lite mer costum scrollbar
+    och låter den vara synlig hela tiden */
+html {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    /* scrollbar-width: thin; */
+    scrollbar-color: var(--color-green-dark) var(--color-green-darkest);
+}
+
+.bike-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1em;
+    border-left: 2px solid var(--color-green-primary);
+    padding: 0 0 0.15em 0.25em;
+    margin-bottom: 0.5em;
+  
+    & span {
+      font-size: 16px;
+      font-weight: 350;
+      color: #000;
+      width: 100%;
+    }
+}
+
+.more-details a:hover {
+    cursor: pointer;
+    color: var(--color-green-primary);
+}

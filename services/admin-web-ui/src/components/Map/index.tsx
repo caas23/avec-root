@@ -41,7 +41,7 @@ const Map: React.FC = () => {
 				}
 
 				const data = await response.json();
-				if (data.length > 0 && data[0].geojson) {
+				if (data?.[0]?.geojson) {
 					setCityBorders(data[0].geojson);
 					setCityCenter([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
 				} else {

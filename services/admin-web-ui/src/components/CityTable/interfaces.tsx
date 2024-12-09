@@ -1,15 +1,19 @@
 interface Bike {
-  bike_id: string; // egentligen ObjectId
+  _id: string;
+  location: [number, number];
+  cityId: string;
+  city_name: string;
+  speed: number;
   status: {
     available: boolean;
     battery_level: number;
     in_service: boolean;
   };
-  location: number[];
+  completed_trips: string[];
 }
 
 interface ChargingStation {
-  station_id: string; // egentligen ObjectId
+  _id: string;
   area: number[][];
   plugs: {
     id: number;
@@ -18,12 +22,12 @@ interface ChargingStation {
 }
 
 interface ParkingZone {
-  zone_id: string;
+  _id: string;
   area: number[][];
 }
 
 interface Rule {
-  rule_id: string;
+  _id: string;
   description: string;
 }
 
