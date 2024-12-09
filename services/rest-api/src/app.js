@@ -6,6 +6,7 @@ import { connectToDatabase } from "../../db/db.js";
 import { getUsers } from '../../db/users.js';
 import { getCities } from '../../db/cities.js';
 import { getBikes } from '../../db/bikes.js';
+import bikeManager from "../../bike-logic/bikeManager.js"
 
 dotenv.config();
 
