@@ -2,21 +2,99 @@
 const database = require("../db/database");
 
 const bike = {
-    // Will this object need attributes like below?
+    reportState : async function reportState(bikeId) {
+        let db = await database.getDb();
+        try {
+            const result = await db.bikeCollection.findOne(bikeId);
+            //const warning = await this.checkForWarning(result)
+            
+            // if (warning) {
+            //     // do something
+            // }
+            return result;
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
+    },
 
-    // speed: null,
-    // location: null,
-    // city_id: null,
-    // city_name: null,
-    // status: {
-    //     battery_level: null,
-    //     in_service: null,
-    //     available: null
-    // },
+    start : async function start(bikeId) {
+        let db = await database.getDb();
+        try {
+            const result = await db.bikeCollection.updateOne(
+                { _id: bikeId },
+                {
+                    $set: {
+                        status: { available: false }
+                    }
+                }
+            );
 
+            return result;
 
-    // Is it more fitting to have this in manager?
-    // Maybe it is nice to take some load of the manager..
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
+    },
+
+    stop : async function stop(bikeId) {
+        let db = await database.getDb();
+        try {
+            const result = await db.bikeCollection.findOneAndUpdate(
+                { _id: bikeId },
+                {
+                    $set: {
+                        status: { available: true }
+                    }
+                },
+                { returnDocument: "after" } // Return the updated document
+            );
+
+            return result.location;
+
+        } catch (e) {
+            console.error(e);
+        } finally {
+            await db.client.close();
+        }
+    },
+
+    checkForWarning : async function checkForWarning(bike) {
+        let db = await database.getDb();
+        const city = await db.cityCollection.findOne(bike.city_id)
+
+        if (!city) {
+            throw new Error(`City not found for city_id: ${bike.city_id}`);
+        }
+
+        const cityZone = city.area
+        const citySpeedLimit = city.speedLimit
+
+        let warning = false;
+
+        if (!cityZone.includes(bike.location)) {
+            
+            warning = true;
+            // stop bike or something
+        }
+
+        // I guess bike speed is already capped?
+
+        // if (bike.speed > citySpeedLimit) {
+        //     // stop bike or something
+        //     warning = true;
+        // }
+
+        if (bike.status.battery_level < 15) {
+            warning = true;
+        }
+
+        return warning
+    },
+
     inService: async function inService(bikeId) {
         let db = await database.getDb();
 
@@ -40,22 +118,27 @@ const bike = {
         }
     },
 
-    reportState : function reportState() {
-        // Initially I was thinking something like this:
-        return this.attributes
-    },
-
-    reportState2 : async function reportState2(bikeId) {
-        // Maybe something like this makes more sense?
+    serviceCompleted: async function serviceCompleted(bikeId) {
         let db = await database.getDb();
+
         try {
-            const result = await db.bikeCollection.findOne(bikeId);
+            const result = await db.bikeCollection.updateOne(
+                { _id: bikeId },
+                { $set: {
+                    status: {
+                        in_service: false,
+                        available: true,
+                        battery_level: 100
+                    },
+                    }
+                }
+            );
+
             return result;
         } catch (e) {
-            console.error(e);
+            console.error(e)
         } finally {
-            await db.client.close();
+            db.client.close()
         }
     }
-
 }
