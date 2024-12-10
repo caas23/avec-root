@@ -1,86 +1,89 @@
-// Replace with actual db location
-const database = require("../db/database");
-const bike = require("./bike.js");
+// import database from "../db/db.js"
+import { getCollection } from "../db/collections.js"
+import { getCities } from "../db/cities.js"
 
-const manager = {
-    createBike: async function createBike(data) {
-        // This line might change depending on how the db object is returned
-        let db = await database.getDb();
+import bike from "./bike.js"
 
-        // When are coordinates introduced?
-        // This code assumes coordinates arrive with request
-        const newBike =  {
-            speed: null,
-            location: data.coordinates,
-            city_id: data.city_id,
-            city_name: data.city_name,
-            status: {
-                battery_level: 100,
-                in_service: false,
-                available: true
-            }
+const bikeManager = {
+    createBike: async function createBike(bikeObject, cityObject) {
+        // fake temp coordinates
+        let bikeCollection = getCollection("bikes");
+
+        if (!city._id) {
+            throw new Error(`City object corrupt, attribute _id not found.`);
         }
 
         try {
-            const result = await db.bikeCollection.insertOne(newBike);
-            return result;
+        const city_id = city._id;
+        // When are coordinates introduced?
+        // This code assumes coordinates arrive with request
+        const newBike =  {
+            speed: bike.speed,
+            location: bike.location,
+            city_id: city._id,
+            city_name: city.name,
+            status: {
+                available: bike.status.available,
+                battery_level: bike.status.battery_level,
+                in_service: bike.status.in_service
+            }
+        }
+
+        const result = await bikeCollection.insertOne(newBike);
+
+        return result;
         } catch (e) {
-            console.error(e);
-        } finally {
-            await db.client.close();
+            console.error("Error creating new bike:", e.message || e);
+            throw new Error("Failed to add bike to bike collection.");
         }
     },
 
-    createManyBikes: async function createManyBikes(data) {
-        let db = await database.getDb();
-    
-        // Map through the data and prepare multiple bike documents
-        const newBikes = data.map((bike) => ({
-            speed: null,
+    createManyBikes: async function createManyBikes(bikeArray, cityObject) {
+        let bikeCollection = getCollection("bikes");
+
+        // Map through the array of bikes and prepare multiple bike documents
+        const newBikes = bikeArray.map((bike) => ({
+            speed: bike.speed,
             location: bike.location,
             city_id: bike.city_id,
             city_name: bike.city_name,
             status: {
-                battery_level: 100,
-                in_service: false,
-                available: true
+                available: bike.available,
+                battery_level: bike.battery_level,
+                in_service: bike.in_service,
             }
         }));
-    
+
         try {
             // Insert multiple bikes
-            let result = await db.bikeCollection.insertMany(newBikes);
-            if (result.ok) {
-                // I am not sure bikes attribute in city is that useful
-                result = cityManager.addNewBikes(newBikes, data.city_id);
-            }
+            let result = await bikeCollection.insertMany(newBikes);
+            // if (result.ok) {
+            //     // I am not sure bikes attribute in city is that useful
+            //     result = cityManager.addNewBikes(newBikes, data.city_id);
+            // }
 
             return result;
         } catch (e) {
-            console.error('Error inserting bikes:', e);
-        } finally {
-            await db.client.close();
+            console.error("Error creating multiple new bikes:", e.message || e);
+            throw new Error("Failed to add many bikes to bike collection.");
         }
     },
 
     getAllBikes: async function getAllBikes() {
-        // We should consider indexing here if request is too slow
-        let db = await database.getDb();
-
+        let collection = getCollection("bikes");
+    
         try {
-            const result = await db.bikeCollection.find({}).toArray();
-
+            const result = await collection.find({}).toArray();
             return result;
         } catch (e) {
-            console.error(e);
-        } finally {
-            await db.client.close();
+            console.error("Error retrieving bikes:", e.message || e);
+            throw new Error("Failed to retrieve bikes from the database.");
         }
     },
 
-
+    // Not yet refactored
     getAllBikesInCity: async function getAllBikesInCity(cityId) {
-        let db = await database.getDb();
+        let db = await database.getDatabase();
 
         try {
             const result = await db.bikeCollection.find({ city_id: cityId }).toArray();
@@ -93,6 +96,7 @@ const manager = {
         }
     },
 
+        // Not yet refactored
     startBike: async function startBike(bikeId) {
         // For now this only makes the bike unavailable 
         const result = await bike.start(bikeId)
@@ -100,6 +104,7 @@ const manager = {
         return result;
     },
 
+    // Not yet refactored
     stopBike: async function stopBike(bikeId) {
         // For now this only makes the bike available and returns the location
         // assuming the trip logic i handled elsewhere and just needs
@@ -117,4 +122,13 @@ const manager = {
         return result;
     },
 
+    //maybe this should be elsewhere?
+    findCityId: async function findCityId(cityName) {
+        let cities = await getCities();
+        const city = cities.find(city => city.name === cityName);
+        return city._id
+    }
+
 }
+
+export default bikeManager

@@ -1,5 +1,4 @@
-// Replace with actual db location
-const database = require("../db/database");
+// import database from "../db/db.js"
 
 const bike = {
     reportState : async function reportState(bikeId) {
@@ -142,3 +141,5 @@ const bike = {
         }
     }
 }
+
+export default bike;
