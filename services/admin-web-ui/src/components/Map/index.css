@@ -8,3 +8,17 @@ p.map-loading-msg {
     text-align: center;
     margin-top: 12vh;
 }
+
+.popup-content {
+    p {
+        font-size: 1em;
+        margin: 0.3em 0;
+    }
+
+
+
+}
+
+.bold {
+    font-weight: 400;
+}
