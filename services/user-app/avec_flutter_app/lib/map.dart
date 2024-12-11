@@ -7,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_map_geojson/flutter_map_geojson.dart';
+import 'dart:convert';
+import 'model/bike.dart';
 
 // Creates the map and locates the user
 
@@ -21,6 +23,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   LatLng? _currentPosition;
+  final List<Marker> _markers = [];
 
   GeoJsonParser myGeoJson = GeoJsonParser(
       defaultPolygonIsFilled: false,
@@ -30,7 +33,8 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     _getCurrentPosition();
-    _fetchCity();
+    // _fetchCity();
+    _fetchBikes();
   }
 
   Future<void> _getCurrentPosition() async {
@@ -55,6 +59,29 @@ class _MapPageState extends State<MapPage> {
       myGeoJson.parseGeoJsonAsString(response.body);
       // var data = json.decode(response.body);
       // print(data);
+    } else {
+      throw Exception('Failed to load JSON data');
+    }
+  }
+
+  Future<void> _fetchBikes() async {
+    final response = await http.get(Uri.parse('http://localhost:1337/bikes'));
+    var bikes = <Bike>[];
+    if (response.statusCode == 200) {
+      var bikesData = json.decode(response.body);
+      for (var bike in bikesData) {
+        // print(Bike.fromJson(bike));
+        bikes.add(Bike.fromJson(bike));
+      }
+
+      for (var bike in bikes) {
+        print(bike);
+        if (bike.status.available == true) {
+          _markers.add(Marker(
+              point: LatLng(bike.location[0], bike.location[1]),
+              child: const Icon(Icons.place)));
+        }
+      }
     } else {
       throw Exception('Failed to load JSON data');
     }
@@ -92,11 +119,12 @@ class _MapPageState extends State<MapPage> {
                           color: Colors.white,
                         ),
                       ),
-                      markerSize: Size(40, 40),
+                      markerSize: Size.square(40),
                       markerDirection: MarkerDirection.heading,
                     ),
                   ),
-                  PolygonLayer(polygons: myGeoJson.polygons),
+                  // PolygonLayer(polygons: myGeoJson.polygons),
+                  MarkerLayer(markers: _markers),
                   RichAttributionWidget(
                     // Include a stylish prebuilt attribution widget that meets all requirments
                     attributions: [
@@ -114,3 +142,25 @@ class _MapPageState extends State<MapPage> {
           );
   }
 }
+
+// class Bike {
+//   final String id;
+//   final List location;
+//   final String cityName;
+//   final bool available;
+
+//   Bike(this.id, this.location, this.cityName, this.available);
+
+//   Bike.fromJson(Map<String, dynamic> json)
+//       : id = json['_id'] as String,
+//         location = json['location'] as List,
+//         cityName = json['city_name'] as String,
+//         available = json['status.available'] as bool;
+
+//   Map<String, dynamic> toJson() => {
+//         'id': id,
+//         'location': location,
+//         'cityName': cityName,
+//         'available': available
+//       };
+// }
