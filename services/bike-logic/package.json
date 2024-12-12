@@ -1,0 +1,12 @@
+{
+  "name": "bike-logic",
+  "version": "1.0.0",
+  "description": "*System logic of a rental bike.*",
+  "main": "bikeManager.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "The AVEC team",
+  "license": "ISC"
+}

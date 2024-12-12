@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { MapContainer, Marker, Popup, TileLayer, GeoJSON } from "react-leaflet";
 import L from "leaflet";
-import scooterIcon from "/src/assets/scooter-pin.png";
+import scooterIcon from "/src/assets/scooter-icon.png";
 import "./index.css";
 
 const Map: React.FC = () => {
@@ -10,6 +10,9 @@ const Map: React.FC = () => {
 	const [cityBorders, setCityBorders] = useState<any>(null);
 	const [cityCenter, setCityCenter] = useState<[number, number] | null>(null);
 
+	// ett sätt att bibehålla å, ä och ö när vi skriver ut stadens namn,
+	// nackdel: behöva lägga in städer manuellt, fördel: smidig lösning
+	// får fundera på bra lösning senare när db kommer in i bilden
 	const cityNameDisplay: { [key: string]: string } = {
 		lund: "Lund",
 		solna: "Solna",
@@ -18,32 +21,28 @@ const Map: React.FC = () => {
 
 	const scooterMarker = L.icon({
 		iconUrl: scooterIcon,
-		iconSize: [40, 40],
-		iconAnchor: [20, 40],
+		iconSize: [30, 30],
+		iconAnchor: [15, 30],
 		popupAnchor: [0, -30],
 	});
 
 	useEffect(() => {
 		document.title = city ? `Map ${cityNameDisplay[city]} - Avec` : "Map - Avec";
 
-		const fetchCityBordersFromDatabase = async (cityName: string) => {
+		const fetchCityBorders = async (cityName: string) => {
 			try {
-				const response = await fetch(`http://localhost:1337/city/${cityName}`);
-
+				const response = await fetch(
+					`https://nominatim.openstreetmap.org/search.php?q=${cityName}&polygon_geojson=1&format=json`
+				);
+				console.log(response);
 				if (!response.ok) {
 					throw new Error(`Error: ${response.statusText}`);
 				}
 
 				const data = await response.json();
-
-				console.log(data);
-
-				if (data.geometry && data.boundingbox) {
-					setCityBorders(data.geometry);
-					setCityCenter([
-						(parseFloat(data.boundingbox[0]) + parseFloat(data.boundingbox[1])) / 2,
-						(parseFloat(data.boundingbox[2]) + parseFloat(data.boundingbox[3])) / 2,
-					]);
+				if (data?.[0]?.geojson) {
+					setCityBorders(data[0].geojson);
+					setCityCenter([parseFloat(data[0].lat), parseFloat(data[0].lon)]);
 				} else {
 					console.error("No city data found.");
 				}
@@ -52,9 +51,13 @@ const Map: React.FC = () => {
 			}
 		};
 
-		if (city) fetchCityBordersFromDatabase(city);
+		city ? fetchCityBorders(city) : "";
 	}, [city]);
 
+	// för att hinna hämta cityCenter och
+	// få kartan centrerad kring önskat område.
+	// tar egentligen bara någon ms men krävs för
+	// att kunna sköta kartritningen på smidigt sätt.
 	if (!cityCenter) {
 		return (
 			<div>
@@ -82,6 +85,7 @@ const Map: React.FC = () => {
 						}}
 					/>
 				)}
+				;
 				<Marker position={cityCenter} icon={scooterMarker}>
 					<Popup>
 						Vi kan använda popups som dessa för <br />

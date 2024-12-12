@@ -4,7 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { connectToDatabase } from "../../db/db.js";
 import { getUsers } from '../../db/users.js';
-import { getCities } from '../../db/cities.js';
+import { getCities, getCity } from '../../db/cities.js';
 import { getBikes } from '../../db/bikes.js';
 import bikeManager from "../../bike-logic/bikeManager.js"
 
@@ -20,7 +20,11 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(
+    cors({
+      origin: "http://localhost:5173", // Frontend URL
+    })
+  );
 app.use(helmet());
 
 app.get("/", (req, res) => {
@@ -36,6 +40,14 @@ app.get("/users", async (req, res) => {
 // GET /cities
 app.get("/cities", async (req, res) => {
     const result = await getCities();
+    res.json(result);
+});
+
+// GET /cities/{city_name}
+app.get("/city/:city_name", async (req, res) => {
+    const city_name = req.params.city_name;
+    const result = await getCity(city_name);
+    console.log(city_name);
     res.json(result);
 });
 
