@@ -5,7 +5,7 @@ import { getCities } from "../db/cities.js"
 import bike from "./bike.js"
 
 const bikeManager = {
-    createBike: async function createBike(bikeObject, cityObject) {
+    createBike: async function createBike(bike, city) {
         // fake temp coordinates
         let bikeCollection = getCollection("bikes");
 
@@ -71,6 +71,8 @@ const bikeManager = {
 
     getAllBikes: async function getAllBikes() {
         let collection = getCollection("bikes");
+
+        console.log("hej");
     
         try {
             const result = await collection.find({}).toArray();
@@ -82,17 +84,22 @@ const bikeManager = {
     },
 
     // Not yet refactored
-    getAllBikesInCity: async function getAllBikesInCity(cityId) {
-        let db = await database.getDatabase();
-
+    getAllBikesInCity: async function getAllBikesInCity(cityName) {
         try {
-            const result = await db.bikeCollection.find({ city_id: cityId }).toArray();
+            const cities = await getCities();
+            const city = cities.find(city => city.name.toLowerCase() === cityName.toLowerCase());
 
-            return result;
+
+            if (!city) {
+                console.error(`City '${cityName}' not found.`);
+                throw new Error(`City '${cityName}' not found.`);
+            }
+    
+            // Return the bikes for the found city
+            return city.bikes;
         } catch (e) {
-            console.error(e);
-        } finally {
-            await db.client.close();
+            console.error(`Failed to retrive bikes from ${cityName}.`, e.message || e);
+            throw new Error(`Failed to retrive bikes from ${cityName}.`);
         }
     },
 
