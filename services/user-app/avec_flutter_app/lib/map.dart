@@ -10,7 +10,7 @@ import 'package:flutter_map_geojson/flutter_map_geojson.dart';
 import 'dart:convert';
 import 'model/bike.dart';
 
-// Creates the map and locates the user
+// Creates the map, locates the user and shows available bikes
 
 class MapPage extends StatefulWidget {
   MapPage({super.key, required this.selectedCity});
@@ -37,6 +37,7 @@ class _MapPageState extends State<MapPage> {
     _fetchBikes();
   }
 
+// gets current location from user
   Future<void> _getCurrentPosition() async {
     PermissionStatus permissionStatus = await Permission.location.request();
     if (permissionStatus.isGranted) {
@@ -51,18 +52,21 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
+//Fetches citylimits from nominatim and converts with geojsonparser
   Future<void> _fetchCity() async {
     final response = await http.get(Uri.parse(
         'https://nominatim.openstreetmap.org/search?q=${widget.selectedCity}&limit=1&polygon_geojson=1&format=geojson'));
     if (response.statusCode == 200) {
       // print(response);
       myGeoJson.parseGeoJsonAsString(response.body);
-      var data = json.decode(response.body);
-      print(data);
+      // var data = json.decode(response.body);
+      // print(data);
     } else {
       throw Exception('Failed to load JSON data');
     }
   }
+
+  // Fetches all the bikes and filters them on city and availabilty, only the available bikes in the right city are shown.
 
   Future<void> _fetchBikes() async {
     final response = await http.get(Uri.parse('http://localhost:1337/bikes'));
@@ -76,10 +80,12 @@ class _MapPageState extends State<MapPage> {
 
       for (var bike in bikes) {
         print(bike);
-        if (bike.status.available == true) {
-          _markers.add(Marker(
-              point: LatLng(bike.location[0], bike.location[1]),
-              child: const Icon(Icons.place)));
+        if (bike.cityName == widget.selectedCity) {
+          if (bike.status.available == true) {
+            _markers.add(Marker(
+                point: LatLng(bike.location[0], bike.location[1]),
+                child: const Icon(Icons.place)));
+          }
         }
       }
     } else {
@@ -148,25 +154,3 @@ class _MapPageState extends State<MapPage> {
           );
   }
 }
-
-// class Bike {
-//   final String id;
-//   final List location;
-//   final String cityName;
-//   final bool available;
-
-//   Bike(this.id, this.location, this.cityName, this.available);
-
-//   Bike.fromJson(Map<String, dynamic> json)
-//       : id = json['_id'] as String,
-//         location = json['location'] as List,
-//         cityName = json['city_name'] as String,
-//         available = json['status.available'] as bool;
-
-//   Map<String, dynamic> toJson() => {
-//         'id': id,
-//         'location': location,
-//         'cityName': cityName,
-//         'available': available
-//       };
-// }

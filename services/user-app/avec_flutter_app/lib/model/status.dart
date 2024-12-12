@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'status.g.dart';
 
+// Converts the status part of jsonobject Bike to a seperate Dartobject Status
+
 @JsonSerializable()
 class Status {
   @JsonKey(defaultValue: false)
