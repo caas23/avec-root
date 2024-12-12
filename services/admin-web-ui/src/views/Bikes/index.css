@@ -26,3 +26,22 @@
 .bike-list li.li-last-bike:hover {
     margin-bottom: 7px;
 }
+
+.add-bike-btn {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 1em;
+    padding: 0.5em 1.25em;
+    font-size: 1em;
+    background-color: var(--color-green-primary);
+    color: #eee;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 3px 0 var(--color-gray);
+
+    &:hover {
+        cursor: pointer;
+        background-color: var(--color-green-dark)
+    }
+}
+
