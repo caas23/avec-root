@@ -7,6 +7,7 @@ part 'bike.g.dart';
 class Bike {
   final List location;
   final Status status;
+
   // @JsonKey(name: 'city_name')
   // final String cityName;
 

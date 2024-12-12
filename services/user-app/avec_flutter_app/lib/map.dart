@@ -33,7 +33,7 @@ class _MapPageState extends State<MapPage> {
   void initState() {
     super.initState();
     _getCurrentPosition();
-    // _fetchCity();
+    _fetchCity();
     _fetchBikes();
   }
 
@@ -57,8 +57,8 @@ class _MapPageState extends State<MapPage> {
     if (response.statusCode == 200) {
       // print(response);
       myGeoJson.parseGeoJsonAsString(response.body);
-      // var data = json.decode(response.body);
-      // print(data);
+      var data = json.decode(response.body);
+      print(data);
     } else {
       throw Exception('Failed to load JSON data');
     }
@@ -89,7 +89,7 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _currentPosition == null
+    return _currentPosition == null && myGeoJson.polygons.isEmpty
         ? const Center(child: CircularProgressIndicator())
         : Stack(
             children: <Widget>[
@@ -123,8 +123,14 @@ class _MapPageState extends State<MapPage> {
                       markerDirection: MarkerDirection.heading,
                     ),
                   ),
-                  // PolygonLayer(polygons: myGeoJson.polygons),
                   MarkerLayer(markers: _markers),
+                  PolygonLayer(useAltRendering: true, polygons: [
+                    Polygon(points: [
+                      const LatLng(30, 40),
+                      LatLng(20, 50),
+                      LatLng(25, 45)
+                    ], color: Colors.blue, label: 'Här är en polygon'),
+                  ]),
                   RichAttributionWidget(
                     // Include a stylish prebuilt attribution widget that meets all requirments
                     attributions: [
