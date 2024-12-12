@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { connectToDatabase } from "../../db/db.js";
 import { getUsers } from '../../db/users.js';
 import { getCities, getCity } from '../../db/cities.js';
+import { getParking } from '../../db/parking.js';
 import { getBikes } from '../../db/bikes.js';
 import bikeManager from "../../bike-logic/bikeManager.js"
 
@@ -54,6 +55,13 @@ app.get("/city/:city_name", async (req, res) => {
 // GET /bikes
 app.get("/bikes", async (req, res) => {
     const result = await getBikes();
+    console.log(result);
+    res.json(result);
+});
+
+// GET all parking zones
+app.get("/parking", async (req, res) => {
+    const result = await getParking();
     console.log(result);
     res.json(result);
 });

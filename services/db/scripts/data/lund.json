@@ -1,8 +1,11 @@
 {
 	"name": "lund",
 	"display_name": "Lund",
+  "bikes": [],
+  "charging_stations": [],
+  "parking_zones": [],
 	"boundingbox": ["55.6783920", "55.7412932", "13.1401706", "13.2634080"],
-	"geojson": {
+	"geometry": {
 		"type": "Polygon",
 		"coordinates": [
 			[

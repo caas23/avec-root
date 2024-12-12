@@ -1,8 +1,11 @@
 {
 	"name": "solna",
 	"display_name": "Solna",
+  "bikes": [],
+  "charging_stations": [],
+  "parking_zones": [],
 	"boundingbox": ["59.3393450", "59.3999668", "17.9620869", "18.0587330"],
-	"geojson": {
+	"geometry": {
 		"type": "Polygon",
 		"coordinates": [
 			[
