@@ -29,7 +29,7 @@ const Bikes: React.FC = () => {
           		</li>
         	))}
       	</ul>
-		<p>Add new bike (not implemented yet)</p>
+		<a href="/bikes/add" className="add-bike-btn">Add new bike</a>
 		</div>
 	);
 };
