@@ -1,6 +1,7 @@
 .bike-list {
 	list-style: none;
     font-size: 1.4em;
+    min-height: 225px;
 }
 
 .bike-list li {
@@ -30,7 +31,7 @@
 .add-bike-btn {
     display: inline-block;
     text-decoration: none;
-    margin-top: 1em;
+    margin-top: 2em;
     padding: 0.5em 1.25em;
     font-size: 1em;
     background-color: var(--color-green-primary);
