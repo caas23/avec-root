@@ -10,7 +10,7 @@ interface Bike {
   };
   completed_trips: string[];
   bike_id: string;
-}
+} 
 
 export type {
   Bike,
