@@ -10,7 +10,7 @@ import bikeManager from "../../bike-logic/bikeManager.js"
 import get from './routes/getDataRoutes.js';
 import add from './routes/addDataRoutes.js';
 import test from './routes/testRoutes.js';
-
+import service from './routes/serviceRoutes.js';
 
 dotenv.config();
 
@@ -27,8 +27,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
 
-app.use('/get', get);
 app.use('/add', add);
+app.use('/get', get);
+app.use('/service', service);
+
 app.use('/test', test);
 
 

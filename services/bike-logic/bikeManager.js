@@ -152,15 +152,20 @@ const bikeManager = {
         // assuming the trip logic i handled elsewhere and just needs
         // bike parking coordinates
 
-        const location = await bike.stop(bikeId)
+        const result = await bike.stop(bikeId)
 
         // We should consider where to put the trip logic, ex:
         // await trip.end(tripId)
-        return location;
+        return result;
     },
 
     bikeToService: async function bikeToService(bikeId) {
-        const result = await bike.inService(bikeId)
+        const result = await bike.startService(bikeId)
+        return result;
+    },
+
+    bikeEndService: async function bikeEndService(bikeId) {
+        const result = await bike.endService(bikeId)
         return result;
     },
 

@@ -15,17 +15,19 @@ router.get("/", async (req, res) => {
 // trigger bike object without a socket
 router.get("/report", async (req, res) => {
     // Fake bike id:
-    const bikeId = "B001"
+    const bikeId = "B002"
     const result = await bike.reportState(bikeId);
     console.log(result);
     res.json(result);
 });
 
+
+// This should according to SDS first go through Manager
 router.post("/report", async (req, res) => {
     let bikeId = req.body.bike_id;
+    console.log(bikeId);
 
     const result = await bike.reportState(bikeId);
-    console.log(result);
     res.json(result);
 });
 
