@@ -4,34 +4,35 @@ import { getCities } from "../db/cities.js"
 
 import bike from "./bike.js"
 
-const bikeManager = {
-    createBike: async function createBike(bike, city) {
-        // fake temp coordinates
-        let bikeCollection = getCollection("bikes");
+// skapa bike_id för varje ny cykel som läggs till
+const generateBikeId = async () => {
+    const counterCollection = getCollection("bike_id_counter")
+    const counter = await counterCollection.findOneAndUpdate(
+        { _id: "counter" },
+        { $inc: { counter_value: 1 } }
+    );
+    return `B${counter.counter_value.toString().padStart(3, "0")}`;
+};
 
-        if (!city._id) {
-            throw new Error(`City object corrupt, attribute _id not found.`);
-        }
+const bikeManager = {
+    createBike: async function createBike(bike) {
+        let bikeCollection = getCollection("bikes");
+        let cityCollection = getCollection("cities");
+
 
         try {
-        const city_id = city._id;
-        // When are coordinates introduced?
-        // This code assumes coordinates arrive with request
-        const newBike =  {
-            speed: bike.speed,
-            location: bike.location,
-            city_id: city._id,
-            city_name: city.name,
-            status: {
-                available: bike.status.available,
-                battery_level: bike.status.battery_level,
-                in_service: bike.status.in_service
-            }
-        }
+            // add bike
+            const bike_id = await generateBikeId();
+            bike.bike_id = bike_id;
+            const bikeResult = await bikeCollection.insertOne(bike); 
 
-        const result = await bikeCollection.insertOne(newBike);
+            // // add bike to given city
+            await cityCollection.updateOne(
+                { display_name: bike.city_name },
+                { $push: { bikes: bike.bike_id } }
+            );
 
-        return result;
+            return bikeResult;
         } catch (e) {
             console.error("Error creating new bike:", e.message || e);
             throw new Error("Failed to add bike to bike collection.");
@@ -71,8 +72,6 @@ const bikeManager = {
 
     getAllBikes: async function getAllBikes() {
         let collection = getCollection("bikes");
-
-        console.log("hej");
     
         try {
             const result = await collection.find({}).toArray();
@@ -80,6 +79,42 @@ const bikeManager = {
         } catch (e) {
             console.error("Error retrieving bikes:", e.message || e);
             throw new Error("Failed to retrieve bikes from the database.");
+        }
+    },
+
+    // för /bikes-vyn i admin
+    getBikesPagination: async (filter = {}, skip = 0, limit = 5) => {
+        const bikeCollection = getCollection("bikes");
+      
+        return await bikeCollection
+          .find(filter)
+          .skip(skip)
+          .limit(Number(limit))
+          .toArray();
+    },
+
+    // för /bikes-vyn i admin, returnerar antal cyklar
+    // baserat på en sökning (används för sidnumrering)
+    countBikesPagination: async (filter = {}) => {
+        const bikeCollection = getCollection("bikes");
+        return await bikeCollection.countDocuments(filter);
+      },
+    
+    // underlätta utveckling, kan behöva ses över innan
+    // användning i systemet, bara använts via url än så länge
+    deleteBike: async function deleteBike(bikeId) {
+        let bikeCollection = getCollection("bikes");
+
+        const filter = { bike_id: bikeId }
+        try {
+
+            const result = await bikeCollection.deleteOne(filter);
+            console.log(`Bike with id ${bikeId} was deleted.`)
+
+        return result;
+        } catch (e) {
+            console.error("Error deleting bike:", e.message || e);
+            throw new Error("Failed to delete bike from bike collection.");
         }
     },
 
