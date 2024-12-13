@@ -24,6 +24,28 @@ router.get("/all/bikes", async (req, res) => {
     res.json(result);
 });
 
+// för /bikes-vyn i admin
+router.get("/all/bikes/pagination", async (req, res) => {
+    const page = req.query.page || 1;
+    const search = req.query.search || "";
+    const limit = 5; // visa 5 cyklar i taget
+    const skip = (page - 1) * limit;
+  
+    // om sökord finns används inbyggda regex och case-insensitive för att söka i db
+    const filter = search ? { bike_id: { $regex: search, $options: "i" } } : {};
+
+    try {
+      const bikes = await bikeManager.getBikesPagination(filter, skip, limit);
+      const totalBikes = await bikeManager.countBikesPagination(filter); // totala antal cyklar baserat på sökning
+      const totalPages = Math.ceil(totalBikes / limit);
+  
+      res.json({ bikes, totalPages });
+    } catch (error) {
+      console.error("Error fetching bikes:", error);
+      res.status(500).send("Error fetching bikes");
+    }
+});
+
 router.post("/all/bikes/in/city", async (req, res) => {
     // fake post variable
     let city = req.body.city;

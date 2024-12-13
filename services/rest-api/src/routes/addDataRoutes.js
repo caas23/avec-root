@@ -7,34 +7,42 @@ router.get("/", async (req, res) => {
     res.json("hej add data routes");
 });
 
-
-router.post("/bike", async (req, res) => {
+// räcker för att lägga till cykel i city
+// och vice versa
+router.post("/bike/to/city", async (req, res) => {
     let newBike = req.body.bike;
-    let city = req.body.city;
+    
+    // city skulle vi kunna hämta via newBike
+    // i createBike, så skickar vi ett objekt
+    // och tar ut city den vägen
+
+
+    // let city = req.body.city;
 
     // fake new test bike
     // comment these out when using actual post objects
-    newBike =  {
-        speed: 0,
-        location: [55.7047,13.191],
-        city_id: "674ec1e6d64b52c8cf519661",
-        city_name: "Lund",
-        status: {
-            available: true,
-            battery_level: 100,
-            in_service: false
-        }
-    }
+    // newBike =  {
+    //     location: [55.7047,13.191],
+    //     city_name: "Lund",
+    //     speed: 0,
+    //     status: {
+    //         available: true,
+    //         battery_level: 100,
+    //         in_service: false
+    //     },
+    //     completed_trips: [],
+    // }
 
     // fake new test city object
-    city =  {
-        _id: "674ec1e6d64b52c8cf519661",
-        name: "Lund",
-    }
+    // city =  {
+    //     _id: "674ec1e6d64b52c8cf519661",
+    //     name: "Lund",
+    // }
 
-    const result = await bikeManager.createBike(newBike, city);
+    const result = await bikeManager.createBike(newBike);
+    // const result = await bikeManager.createBike(newBike, city);
 
-    console.log(result);
+    // console.log(result);
     res.json(result);
 });
 
