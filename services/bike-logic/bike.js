@@ -24,10 +24,10 @@ const bike = {
         let bikeCollection = getCollection("bikes");
         try {
             const result = await bikeCollection.updateOne(
-                { _id: bikeId },
+                { bike_id: bikeId },
                 {
                     $set: {
-                        status: { available: false }
+                        "status.available": false
                     }
                 },
                 { returnDocument: "after" }
@@ -37,6 +37,8 @@ const bike = {
 
         } catch (e) {
             console.error(e);
+            throw new Error(`Failed to start bike with bike_id: ${bikeId}.`);
+
         }
     },
 
@@ -44,20 +46,21 @@ const bike = {
         let bikeCollection = getCollection("bikes");
 
         try {
-            const result = await db.bikeCollection.findOneAndUpdate(
-                { _id: bikeId },
+            const result = await bikeCollection.updateOne(
+                { bike_id: bikeId },
                 {
                     $set: {
-                        status: { available: true }
+                        "status.available": true
                     }
                 },
                 { returnDocument: "after" }
             );
 
-            return result.location;
+            return result;
 
         } catch (e) {
             console.error(e);
+            throw new Error(`Failed to stop bike with bike_id: ${bikeId}.`);
         }
     },
 
@@ -95,50 +98,49 @@ const bike = {
         return warning
     },
 
-    inService: async function inService(bikeId) {
-        let db = await database.getDb();
+    startService: async function startService(bikeId) {
+        let bikeCollection = getCollection("bikes");
 
         try {
-            const result = await db.bikeCollection.updateOne(
-                { _id: bikeId },
-                { $set: {
-                    status: {
-                        in_service: true,
-                        available: false
-                    },
-                    }
-                }
+
+            // Then update `status.in_service`
+            const result = await bikeCollection.updateOne(
+                { bike_id: bikeId },
+                { 
+                    $set: { 
+                        "status.available": false,
+                        "status.in_service": true
+                    } 
+                },
+                { returnDocument: "after" }
             );
 
             return result;
         } catch (e) {
             console.error(e)
-        } finally {
-            db.client.close()
+            throw new Error(`Failed to start service for bike with bike_id: ${bikeId}.`);
         }
     },
 
-    serviceCompleted: async function serviceCompleted(bikeId) {
-        let db = await database.getDb();
+    endService: async function serviceCompleted(bikeId) {
+        let bikeCollection = getCollection("bikes");
 
         try {
-            const result = await db.bikeCollection.updateOne(
-                { _id: bikeId },
-                { $set: {
-                    status: {
-                        in_service: false,
-                        available: true,
-                        battery_level: 100
-                    },
-                    }
-                }
+            const result = await bikeCollection.updateOne(
+                { bike_id: bikeId },
+                { 
+                    $set: { 
+                        "status.available": true,
+                        "status.in_service": false
+                    } 
+                },
+                { returnDocument: "after" }
             );
 
             return result;
         } catch (e) {
-            console.error(e)
-        } finally {
-            db.client.close()
+            console.error(e);
+            throw new Error(`Failed to ebd service for bike with bike_id: ${bikeId}.`);
         }
     }
 }
