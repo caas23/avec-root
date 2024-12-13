@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "./index.css";
 import { ParkingZone, MapProps } from "./interfaces";
-import parkingIcon from "/src/assets/parking-spot.png"; 
+import parkingIcon from "/src/assets/parking-spot.png";
 
 const ShowParkingZones: React.FC<{ zones: ParkingZone[] }> = ({ zones }) => {
   const map = useMap();

@@ -2,6 +2,7 @@ import express from 'express';
 import { getCities } from '../../../db/cities.js';
 import { getBikes } from '../../../db/bikes.js';
 import bikeManager from "../../../bike-logic/bikeManager.js"
+import bike from '../../../bike-logic/bike.js';
 
 
 const router = express.Router();
@@ -57,5 +58,14 @@ router.post("/all/bikes/in/city", async (req, res) => {
 
     res.json(result);
 });
+
+// har lagt in denna lite temporärt för enkelhetens skull
+router.get("/one/bike/", async (req, res) => {
+    const bike_id = req.query.bike_id;
+    const result = await bike.reportState(bike_id);
+
+    res.json(result);
+});
+
 
 export default router;
