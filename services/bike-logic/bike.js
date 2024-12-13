@@ -1,10 +1,13 @@
-// import database from "../db/db.js"
+import { getCollection } from "../db/collections.js"
+import { getCities } from "../db/cities.js"
 
 const bike = {
     reportState : async function reportState(bikeId) {
-        let db = await database.getDb();
+        let bikeCollection = getCollection("bikes");
+        console.log(bikeId);
+
         try {
-            const result = await db.bikeCollection.findOne(bikeId);
+            const result = await bikeCollection.findOne({ bike_id: bikeId });
             //const warning = await this.checkForWarning(result)
             
             // if (warning) {
@@ -12,35 +15,34 @@ const bike = {
             // }
             return result;
         } catch (e) {
-            console.error(e);
-        } finally {
-            await db.client.close();
+            console.error("Error retrieving bike:", e.message || e);
+            throw new Error(`Failed to find bike with bike_id: ${bikeId}.`);
         }
     },
 
     start : async function start(bikeId) {
-        let db = await database.getDb();
+        let bikeCollection = getCollection("bikes");
         try {
-            const result = await db.bikeCollection.updateOne(
+            const result = await bikeCollection.updateOne(
                 { _id: bikeId },
                 {
                     $set: {
                         status: { available: false }
                     }
-                }
+                },
+                { returnDocument: "after" }
             );
 
             return result;
 
         } catch (e) {
             console.error(e);
-        } finally {
-            await db.client.close();
         }
     },
 
     stop : async function stop(bikeId) {
-        let db = await database.getDb();
+        let bikeCollection = getCollection("bikes");
+
         try {
             const result = await db.bikeCollection.findOneAndUpdate(
                 { _id: bikeId },
@@ -49,18 +51,17 @@ const bike = {
                         status: { available: true }
                     }
                 },
-                { returnDocument: "after" } // Return the updated document
+                { returnDocument: "after" }
             );
 
             return result.location;
 
         } catch (e) {
             console.error(e);
-        } finally {
-            await db.client.close();
         }
     },
 
+    // Not yet refactored
     checkForWarning : async function checkForWarning(bike) {
         let db = await database.getDb();
         const city = await db.cityCollection.findOne(bike.city_id)

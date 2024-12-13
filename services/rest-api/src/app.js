@@ -9,6 +9,8 @@ import { getUsers } from '../../db/users.js';
 import bikeManager from "../../bike-logic/bikeManager.js"
 import get from './routes/getDataRoutes.js';
 import add from './routes/addDataRoutes.js';
+import test from './routes/testRoutes.js';
+
 
 dotenv.config();
 
@@ -27,6 +29,8 @@ app.use(helmet());
 
 app.use('/get', get);
 app.use('/add', add);
+app.use('/test', test);
+
 
 app.get("/", (req, res) => {
     res.send("Greetings, friend of AVEC!");
