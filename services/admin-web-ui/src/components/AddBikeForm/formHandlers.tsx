@@ -1,36 +1,42 @@
-import { FormData } from "./interfaces";
-import { cityParkingZones } from "./tempParkingZoneData";
-import { ParkingZone } from "./interfaces";
+import { cityData, parkingZoneData } from "../AddBike/tempParkingZoneData"; // ska bytas ut så fort det finns fakstisk data för parkeringszoner
+import { HandleCityProps, HandleParkingProps, HandleMarkerProps } from "./interfaces";
 
-const handleCityChange = (
-  e: React.ChangeEvent<HTMLSelectElement>,
-  formData: FormData,
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>,
-  setAvailableZones: React.Dispatch<React.SetStateAction<ParkingZone[]>>
-) => {
+const handleCityChange = ({
+  e,
+  formData,
+  setFormData,
+  setAvailableZones,
+}: HandleCityProps) => {
   const cityName = e.target.value;
   setFormData({ ...formData, cityName, parkingZone: "" });
 
   // hämta och sätt zoner för given city
-  const selectedCity = cityParkingZones.find((city) => city.name === cityName);
-  selectedCity ? setAvailableZones(selectedCity.parking_zones) : setAvailableZones([]);
+  const selectedCity = cityData.find((city) => city.name === cityName);
+  const zones = selectedCity
+  ? selectedCity.parking_zones.map((zoneId) => {
+      return {
+        _id: zoneId,
+        area: parkingZoneData.find((zone) => zone._id === zoneId)?.area || [],
+      };
+    })
+  : [];
+  setAvailableZones(zones);
 };
 
 // uppdatera selectad zon baserat på val i dropdownen
-const handleParkingZoneChange = (
-  e: React.ChangeEvent<HTMLSelectElement>,
-  formData: FormData,
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>
-) => {
-  const parkingZone = e.target.value;
-  setFormData({ ...formData, parkingZone });
+const handleParkingZoneChange = ({
+  e,
+  formData,
+  setFormData,
+}: HandleParkingProps) => {
+  setFormData({ ...formData, parkingZone: e.target.value });
 };
 
 // uppdatera selectad zon baserat på klickad markör på kartan
-const handleMarkerClick = (
-  zoneId: string,
-  setFormData: React.Dispatch<React.SetStateAction<FormData>>
-) => {
+const handleMarkerClick = ({
+  zoneId,
+  setFormData,
+}: HandleMarkerProps) => {
   setFormData((prevFormData) => ({ ...prevFormData, parkingZone: zoneId }));
 };
 

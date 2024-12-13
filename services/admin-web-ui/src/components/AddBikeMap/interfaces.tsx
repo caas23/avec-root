@@ -7,8 +7,11 @@ interface ParkingZone {
 // de delar som behövts under testning av 
 // formuläret för att addera en cykel
 interface City {
+  _id: string;
   name: string;
-  parking_zones: ParkingZone[];
+  parking_zones: string[];
+  bikes: string[];
+  charging_stations: string[];
 }
 
 interface FormData {
